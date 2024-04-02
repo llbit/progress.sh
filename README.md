@@ -1,40 +1,41 @@
-# Progress bar  
+# Progress bar
 
-> Simple & sexy progress bar for `bash`, give it a duration and it will do the rest.
+A simple Bash progress bar.
 
-![progress-bar.sh in action on light terminal](./preview.gif)
-![progress-bar.sh in action on dark terminal](./preview-dark.gif)
+This is a rewrite of the upstream project [edouard-lopez/progress-bar.sh](https://github.com/edouard-lopez/progress-bar.sh)
+to simplify the code and fix the following issues:
 
-### Usage
+* The only provided function `progress-bar` was not directly usable for
+  anything other than showing an example of a progress bar.  I added a the
+  `progress` function which does what I assume most actually users need: it
+  takes an elapsed and total value and displays a progress bar representing the
+  given values.
+* The upstream code used redundant arithmetic operations. For example multiplying by `100/100`.
+* The function did not properly clear the current line when resetting the cursor with `\r`.
+* The function printed `tput` error messages if `TERM` had an unsupported value
+  (this can happen on CI servers, for example).
+* Testing the function requires sourcing the shell script. It should be able to
+  test with an example script e.g. `./example.sh`.
+* I disliked the original author's use of 'sexy' to describe a simple Bash utility function.
 
-1. Copy to your code or **source**:
+The original solution of the upstream project originated from this Stack Overflow question:
+[How to add a progress bar to a shell script](https://stackoverflow.com/questions/238073/how-to-add-a-progress-bar-to-a-shell-script)
 
-        source ./progress-bar.sh
+## Usage
 
-2. Call with a `duration`:
+Test the function by running `./example.sh`. It demonstrates an animated
+progress bar looking like this:
 
-        progress-bar 5
+    ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 30%
 
-:information_source: Speed can be initially defined by [exporting `SLEEP_DURATION`](tests.bats#L5).
 
-### Why?
+Use the function in your script by sourcing `progress.sh` and calling the
+progress function:
 
-1. _I needed one_ ;
-1. What I found was _too ugly and too complicated_ ;
-1. I wanted **a good UX** ;
-1. Check-out [similar projects'](https://github.com/search?l=Shell&o=desc&p=2&q=progress+bar&ref=searchresults&s=stars&type=Repositories&utf8=%E2%9C%93) source code and you'll understand.
+    source ./progress.sh
+    progress 5 10
 
-### Who use it?
 
-* [byzanz-gui](https://github.com/edouard-lopez/byzanz-gui).
+## License
 
-### Test
-
-**Requirements:** [`bats`](https://github.com/sstephenson/bats).
-
-    $ bats ./tests.bats
-
-### License
-
-> MIT contact@edouard-lopez.com.
-
+> MIT jesper.oqvist@gmail.com
